@@ -9,34 +9,34 @@ class Node<T> {
 }
 
 export default class SinglyLinkedList<T> {
-  private head?: Node<T>;
-  private tail?: Node<T>;
-  public length: number = 0;
+  length = 0;
+  #head?: Node<T>;
+  #tail?: Node<T>;
 
   append(item: T): void {
     var node = new Node(item);
     this.length++;
 
-    if (!this.tail) {
-      this.tail = this.head = node;
+    if (!this.#tail) {
+      this.#tail = this.#head = node;
       return;
     }
 
-    this.tail.next = node;
-    this.tail = node;
+    this.#tail.next = node;
+    this.#tail = node;
   }
 
   prepend(item: T): void {
     var node = new Node(item);
     this.length++;
 
-    if (!this.head) {
-      this.head = this.tail = node;
+    if (!this.#head) {
+      this.#head = this.#tail = node;
       return;
     }
 
-    node.next = this.head;
-    this.head = node;
+    node.next = this.#head;
+    this.#head = node;
   }
 
   insertAt(item: T, idx: number): void {
@@ -45,20 +45,20 @@ export default class SinglyLinkedList<T> {
 
   remove(item: T): T | undefined {
     // is list empty?
-    if (!this.head) {
+    if (!this.#head) {
       return undefined;
     }
 
     // are we removing the head?
-    if (this.head.value == item) {
-      return this.removeHead();
+    if (this.#head.value == item) {
+      return this.#removeHead();
     }
 
     // the item is somewhere in between the head and tail
     {
       let curr;
       for (
-        curr = this.head;
+        curr = this.#head;
         curr.next && curr.next.value != item;
         curr = curr.next
       );
@@ -72,8 +72,8 @@ export default class SinglyLinkedList<T> {
         curr.next = curr.next.next;
 
         // are we removing the tail?
-        if (nodeToDelete == this.tail) {
-          this.tail = curr;
+        if (nodeToDelete == this.#tail) {
+          this.#tail = curr;
         }
 
         this.length--;
@@ -84,7 +84,7 @@ export default class SinglyLinkedList<T> {
 
   removeAt(idx: number): T | undefined {
     // is list empty?
-    if (!this.head) {
+    if (!this.#head) {
       return undefined;
     }
 
@@ -95,12 +95,12 @@ export default class SinglyLinkedList<T> {
 
     // are we removing the head?
     if (idx == 0) {
-      return this.removeHead();
+      return this.#removeHead();
     }
 
     // the item is somewhere in between the head and tail
     {
-      let curr = this.head;
+      let curr = this.#head;
       for (let i = 0; i < idx - 1 && curr.next; i++, curr = curr.next);
 
       if (!curr.next) {
@@ -112,8 +112,8 @@ export default class SinglyLinkedList<T> {
         curr.next = curr.next.next;
 
         // are we removing the tail?
-        if (nodeToDelete == this.tail) {
-          this.tail = curr;
+        if (nodeToDelete == this.#tail) {
+          this.#tail = curr;
         }
 
         this.length--;
@@ -124,7 +124,7 @@ export default class SinglyLinkedList<T> {
 
   get(idx: number): T | undefined {
     // is list empty?
-    if (!this.head) {
+    if (!this.#head) {
       return undefined;
     }
 
@@ -134,26 +134,27 @@ export default class SinglyLinkedList<T> {
     }
 
     {
-      let curr = this.head as Node<T> | undefined;
+      let curr = this.#head as Node<T> | undefined;
       for (let i = 0; i < idx && curr; i++, curr = curr.next);
       return curr?.value;
     }
   }
 
-  private removeHead(): T | undefined {
-    if (!this.head) {
+  #removeHead(): T | undefined {
+    if (!this.#head) {
       return undefined;
     }
 
-    var value = this.head.value;
-    this.head = this.head.next;
+    {
+      let value = this.#head.value;
+      this.#head = this.#head.next;
 
-    // update the tail
-    if (this.length == 1) {
-      this.tail = this.head;
+      if (this.length == 1) {
+        this.#tail = this.#head;
+      }
+
+      this.length--;
+      return value;
     }
-
-    this.length--;
-    return value;
   }
 }

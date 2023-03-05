@@ -4,33 +4,33 @@ type Node<T> = {
 };
 
 export default class Queue<T> {
-  public length = 0;
-  private head?: Node<T>;
-  private tail?: Node<T>;
+  length = 0;
+  #head?: Node<T>;
+  #tail?: Node<T>;
 
   enqueue(item: T): void {
     var node = { value: item } as Node<T>;
     this.length++;
 
-    if (!this.tail) {
-      this.tail = this.head = node;
+    if (!this.#tail) {
+      this.#tail = this.#head = node;
       return;
     }
 
-    this.tail.next = node;
-    this.tail = node;
+    this.#tail.next = node;
+    this.#tail = node;
   }
 
   deque(): T | undefined {
-    if (!this.head) {
+    if (!this.#head) {
       return undefined;
     }
 
     {
-      let head = this.head;
-      this.head = this.head.next;
-      if (!this.head) {
-        this.tail = undefined;
+      let head = this.#head;
+      this.#head = this.#head.next;
+      if (!this.#head) {
+        this.#tail = undefined;
       }
       this.length--;
       head.next = undefined; // free, not needed because of gc
@@ -39,6 +39,6 @@ export default class Queue<T> {
   }
 
   peek(): T | undefined {
-    return this.head?.value;
+    return this.#head?.value;
   }
 }
