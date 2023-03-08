@@ -1,8 +1,3 @@
-// TODO: finish this.
-// add a private helper for traversing the single linked list, remove code duplication.
-// maybe consider adding iterator protocol.
-// make the this.length property management automatic.
-
 class Node<T> {
   next?: Node<T>;
   constructor(public value: T) {}
@@ -12,6 +7,34 @@ export default class SinglyLinkedList<T> {
   length = 0;
   #head?: Node<T>;
   #tail?: Node<T>;
+
+  toString() {
+    return [...this].map(nodeToString).join(" <-> ");
+
+    function nodeToString(node: Node<T>) {
+      return `[${node.value}]`;
+    }
+  }
+
+  *[Symbol.iterator]() {
+    for (let curr = this.#head; curr; curr = curr.next) {
+      yield curr;
+    }
+  }
+
+  get(idx: number): T | undefined {
+    if (idx >= this.length) {
+      return undefined;
+    }
+
+    {
+      let curr = this.#head;
+      for (let i = 0; i < idx && curr; i++) {
+        curr = curr.next;
+      }
+      return curr?.value;
+    }
+  }
 
   append(item: T): void {
     var node = new Node(item);
@@ -40,103 +63,75 @@ export default class SinglyLinkedList<T> {
   }
 
   insertAt(item: T, idx: number): void {
-    // TODO:
-  }
-
-  remove(item: T): T | undefined {
-    // is list empty?
     if (!this.#head) {
       return undefined;
     }
 
-    // are we removing the head?
+    if (idx > this.length) {
+      return undefined;
+    }
+
+    if (idx == 0) {
+      return this.prepend(item);
+    }
+
+    if (idx == this.length) {
+      return this.append(item);
+    }
+
+    {
+      let curr = this.#head;
+      for (let i = 0; i < idx - 1 && curr.next; i++) {
+        curr = curr.next;
+      }
+
+      {
+        let node = new Node(item);
+        node.next = curr.next;
+
+        curr.next = node;
+        this.length++;
+      }
+    }
+  }
+
+  remove(item: T): T | undefined {
+    if (!this.#head) {
+      return undefined;
+    }
+
     if (this.#head.value == item) {
       return this.#removeHead();
     }
 
-    // the item is somewhere in between the head and tail
-    {
-      let curr;
-      for (
-        curr = this.#head;
-        curr.next && curr.next.value != item;
-        curr = curr.next
-      );
-
-      if (!curr.next) {
-        return undefined;
-      }
-
-      {
-        let nodeToDelete = curr.next;
-        curr.next = curr.next.next;
-
-        // are we removing the tail?
-        if (nodeToDelete == this.#tail) {
-          this.#tail = curr;
-        }
-
-        this.length--;
-        return nodeToDelete.value;
+    for (let curr = this.#head; curr.next; curr = curr.next) {
+      if (curr.next.value == item) {
+        return this.#removeNextNode(curr);
       }
     }
+
+    return undefined;
   }
 
   removeAt(idx: number): T | undefined {
-    // is list empty?
     if (!this.#head) {
       return undefined;
     }
 
-    // is index out of bounds?
     if (idx >= this.length) {
       return undefined;
     }
 
-    // are we removing the head?
     if (idx == 0) {
       return this.#removeHead();
     }
 
-    // the item is somewhere in between the head and tail
     {
       let curr = this.#head;
-      for (let i = 0; i < idx - 1 && curr.next; i++, curr = curr.next);
-
-      if (!curr.next) {
-        return undefined;
+      for (let i = 0, curr = this.#head; i < idx - 1 && curr.next; i++) {
+        curr = curr.next;
       }
-
-      {
-        let nodeToDelete = curr.next;
-        curr.next = curr.next.next;
-
-        // are we removing the tail?
-        if (nodeToDelete == this.#tail) {
-          this.#tail = curr;
-        }
-
-        this.length--;
-        return nodeToDelete.value;
-      }
-    }
-  }
-
-  get(idx: number): T | undefined {
-    // is list empty?
-    if (!this.#head) {
-      return undefined;
-    }
-
-    // is index out of bounds?
-    if (idx >= this.length) {
-      return undefined;
-    }
-
-    {
-      let curr = this.#head as Node<T> | undefined;
-      for (let i = 0; i < idx && curr; i++, curr = curr.next);
-      return curr?.value;
+      return this.#removeNextNode(curr);
     }
   }
 
@@ -155,6 +150,24 @@ export default class SinglyLinkedList<T> {
 
       this.length--;
       return value;
+    }
+  }
+
+  #removeNextNode(node: Node<T>): T | undefined {
+    if (!node.next) {
+      return undefined;
+    }
+
+    {
+      let nodeToDelete = node.next;
+      node.next = node.next.next;
+
+      if (nodeToDelete == this.#tail) {
+        this.#tail = node;
+      }
+
+      this.length--;
+      return nodeToDelete.value;
     }
   }
 }
