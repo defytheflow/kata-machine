@@ -14,6 +14,9 @@ export function test_list(list: List<number>): void {
   // console.log(list.toString());
 
   expect(list.removeAt(1)).toEqual(9);
+
+  // console.log(list.toString());
+
   expect(list.remove(9)).toEqual(undefined);
   expect(list.removeAt(0)).toEqual(5);
   expect(list.removeAt(0)).toEqual(11);
