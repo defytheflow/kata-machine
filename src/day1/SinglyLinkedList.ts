@@ -8,7 +8,7 @@ export default class SinglyLinkedList<T> {
   private head?: Node<T>;
   private tail?: Node<T>;
 
-  toString() {
+  toString(): string {
     return [...this].map(nodeToString).join(" -> ");
 
     function nodeToString(node: Node<T>) {

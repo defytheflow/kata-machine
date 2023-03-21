@@ -5,36 +5,34 @@ type Node<T> = {
 
 export default class Stack<T> {
   length = 0;
-  #head?: Node<T>;
+  private head?: Node<T>;
 
   push(item: T): void {
     var node = { value: item } as Node<T>;
     this.length++;
 
-    if (!this.#head) {
-      this.#head = node;
+    if (!this.head) {
+      this.head = node;
       return;
     }
 
-    node.prev = this.#head;
-    this.#head = node;
+    node.prev = this.head;
+    this.head = node;
   }
 
   pop(): T | undefined {
-    if (!this.#head) {
+    if (!this.head) {
       return undefined;
     }
 
-    {
-      let head = this.#head;
-      this.#head = this.#head.prev;
-      this.length--;
-      head.prev = undefined;
-      return head.value;
-    }
+    var head = this.head;
+    this.head = this.head.prev;
+    this.length--;
+    head.prev = undefined;
+    return head.value;
   }
 
   peek(): T | undefined {
-    return this.#head?.value;
+    return this.head?.value;
   }
 }
