@@ -1,5 +1,4 @@
 export default function merge_sort(arr: number[]): void {
-  // console.log(`START merge_sort(${arr})`);
   if (arr.length <= 1) {
     return;
   }
@@ -12,7 +11,6 @@ export default function merge_sort(arr: number[]): void {
   merge_sort(right);
 
   merge(arr, left, right);
-  // console.log(`END merge_sort(${arr})`);
 }
 
 function merge(arr: number[], left: number[], right: number[]): void {
@@ -43,4 +41,3 @@ function merge(arr: number[], left: number[], right: number[]): void {
     outIdx++;
   }
 }
-

@@ -27,5 +27,6 @@ module.exports = {
     "DijkstraList",
     "RingBuffer",
     "MergeSort",
+    "InsertionSort",
   ],
 };
