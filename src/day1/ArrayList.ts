@@ -21,7 +21,8 @@ export default class ArrayList<T> {
     if (this.length == this.capacity) {
       this.grow();
     }
-    this.data[this.length++] = item;
+    this.data[this.length] = item;
+    this.length++;
   }
 
   prepend(item: T): void {
@@ -65,7 +66,8 @@ export default class ArrayList<T> {
     for (let i = idx; i < this.length - 1; i++) {
       this.data[i] = this.data[i + 1];
     }
-    this.data[this.length--] = undefined;
+    this.data[this.length] = undefined;
+    this.length--;
     return value;
   }
 

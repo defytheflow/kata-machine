@@ -1,13 +1,14 @@
+// TODO: organize this as a module. Do it as professionally as you can.
 const ALPHABET_SIZE = 26;
 
 class TrieNode {
-  value: string;
-  children: (TrieNode | undefined)[] = Array.from({ length: ALPHABET_SIZE });
+  children: (TrieNode | undefined)[] = Array.from(
+    { length: ALPHABET_SIZE },
+    () => undefined,
+  );
   isEndOfWord = false;
 
-  constructor(value: string) {
-    this.value = value;
-  }
+  constructor(public value: string) {}
 
   hasChildren(): boolean {
     return this.children.some(Boolean);
