@@ -26,5 +26,6 @@ module.exports = {
     "MinHeap",
     "DijkstraList",
     "RingBuffer",
+    "MergeSort",
   ],
 };
